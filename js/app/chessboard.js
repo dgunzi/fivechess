@@ -124,7 +124,7 @@ ChessBoard.prototype._printPanel = function() {
         graph.addEdge(columnEdge, parent, null, null, board.boardSize+i);
     };
     //排序
-   graph.orderCells(true,[background]);
+    graph.orderCells(true,[background]);
 };
 
 //绘制点
