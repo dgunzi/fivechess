@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>mxgraph五子棋游戏</title>
+	<script>
+		mxBasePath = './js/graph/';
+	</script>
+	<script src="./js/graph/js/mxClient.js"></script>
+	<script src="./js/jquery/jquery.js"></script>
+	<script src="./js/app/chessboard.js"></script>
+	<script src="./js/app/chessbox.js"></script>
+	<script src="./js/app/game.js"></script>
+	<style>
+		*{
+			padding: 0;
+			margin: 0;
+		}
+		#chessbox{
+			width: 36px;
+			height:73px;
+			background-color: #F8963E;
+			position: absolute;
+			top: 260px;
+			left: 90px;
+			border: 1px solid #000000;
+			z-index: 2001;
+		}
+		#chessbox div{
+			width: 36px;
+			height: 36px;
+		}
+		#chessbox .white{
+			border-top: 1px solid #000000;
+		}
+		#chessbox .disable{
+			background-color: #cccccc;
+		}
+		
+	</style>
+</head>
+<body>
+	<div id="chessbox">
+		<div class="black"><img src="./img/blackchess.png" alt="黑棋" id="blackchess"></div>
+		<div class="white"><img src="./img/whitechess.png" alt="白棋" id="whitechess"></div>
+	</div>
+	<script>
+		var game = new FiveChess();
+		game.init();
+		//调试方法，不可调用
+		function viewXML(){
+			var graph = chessborad.graph;
+		    var encoder = new mxCodec();
+		    var node = encoder.encode(graph.getModel ());
+		    console.log(mxUtils .getPrettyXml(node));
+		}
+	</script>
+</body>
+</html>
