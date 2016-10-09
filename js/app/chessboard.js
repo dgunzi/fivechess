@@ -11,9 +11,37 @@ function ChessBoard() {
     //起始点
     this.startPoint = new mxPoint(280, 40);
     //9个星
-    this.stars = [{x:4,y:4},{x:4,y:10},{x:4,y:16},{x:10,y:4},{x:10,y:10},{x:10,y:16},{x:16,y:4},{x:16,y:10},{x:16,y:16}];
+    this.stars = [{
+        x: 4,
+        y: 4
+    }, {
+        x: 4,
+        y: 10
+    }, {
+        x: 4,
+        y: 16
+    }, {
+        x: 10,
+        y: 4
+    }, {
+        x: 10,
+        y: 10
+    }, {
+        x: 10,
+        y: 16
+    }, {
+        x: 16,
+        y: 4
+    }, {
+        x: 16,
+        y: 10
+    }, {
+        x: 16,
+        y: 16
+    }];
     //星的大小
     this.starWidth = 8;
+    this.data = new FiveChessData();
 };
 
 //初始化
@@ -22,6 +50,7 @@ ChessBoard.prototype.init = function(graph) {
         mxUtils.error('浏览器不支持maGraph控件!', 200, false);
     } else {
         this.graph = this._createGraph();
+        this.data.init(this.boardSize);
         this._loadStyle();
         this._graphConfig();
         this._draw();
@@ -56,22 +85,22 @@ ChessBoard.prototype._createGraph = function() {
 };
 
 //载入样式
-ChessBoard.prototype._loadStyle = function(){
+ChessBoard.prototype._loadStyle = function() {
     var node = mxUtils.load(mxBasePath + '/style/default.xml').getDocumentElement();
     var dec = new mxCodec(node.ownerDocument);
     dec.decode(node, this.graph.getStylesheet());
 };
 
 //图的默认配置
-ChessBoard.prototype._graphConfig = function(){
+ChessBoard.prototype._graphConfig = function() {
     var graph = this.graph;
     //设置不允许节点改变大小
     graph.setCellsResizable(false);
     graph.dropEnabled = true;
-    graph.isCellFoldable = function(cell,collapse){
+    graph.isCellFoldable = function(cell, collapse) {
         return false;
     }
-   graph.isCellEditable = function(cell) {
+    graph.isCellEditable = function(cell) {
         return false;
     };
     graph.isCellCloneable = function(cell) {
@@ -101,10 +130,10 @@ ChessBoard.prototype._draw = function() {
 ChessBoard.prototype._printPanel = function() {
     var graph = this.graph;
     var board = this;
-    var panelWidth =  (board.boardSize - 1) * board.gridSize;
+    var panelWidth = (board.boardSize - 1) * board.gridSize;
     var parent = graph.getDefaultParent();
     //背景
-    var background = graph.insertVertex(parent,null,'',this.startPoint.x-this.gridSize,this.startPoint.y-this.gridSize,panelWidth+this.gridSize*2,panelWidth+this.gridSize*2,'boardbg',null);
+    var background = graph.insertVertex(parent, null, '', this.startPoint.x - this.gridSize, this.startPoint.y - this.gridSize, panelWidth + this.gridSize * 2, panelWidth + this.gridSize * 2, 'boardbg', null);
     for (var i = 0; i < board.boardSize; i++) {
         //横向线
         var rowGeo = new mxGeometry();
@@ -121,17 +150,17 @@ ChessBoard.prototype._printPanel = function() {
         columnGeo.relative = 1;
         var columnEdge = new mxCell('', columnGeo, 'edgeStyle=none;endArrow=none;');
         columnEdge.edge = 1;
-        graph.addEdge(columnEdge, parent, null, null, board.boardSize+i);
+        graph.addEdge(columnEdge, parent, null, null, board.boardSize + i);
     };
     //排序
-    graph.orderCells(true,[background]);
+    graph.orderCells(true, [background]);
 };
 
 //绘制点
 ChessBoard.prototype._printPoint = function() {
     var parent = this.graph.getDefaultParent();
     for (var i = 0; i < this.stars.length; i++) {
-        var star = this.graph.insertVertex(parent, null, '', this.startPoint.x + (this.stars[i].x-1) * this.gridSize - this.starWidth / 2, this.startPoint.y + (this.stars[i].y-1) * this.gridSize - this.starWidth / 2, this.starWidth, this.starWidth, 'star', null);
+        var star = this.graph.insertVertex(parent, null, '', this.startPoint.x + (this.stars[i].x - 1) * this.gridSize - this.starWidth / 2, this.startPoint.y + (this.stars[i].y - 1) * this.gridSize - this.starWidth / 2, this.starWidth, this.starWidth, 'star', null);
     }
 };
 
@@ -141,16 +170,21 @@ ChessBoard.prototype._printLocation = function() {
     var parent = this.graph.getDefaultParent();
     for (var i = 0; i < board.boardSize; i++) {
         for (var j = 0; j < board.boardSize; j++) {
-            var locationX = board.startPoint.x+i*this.gridSize - board.gridSize/2;
-            var locationY = board.startPoint.y+j*this.gridSize - board.gridSize/2;
-            var loaction = board.graph.insertVertex(parent,null,'',locationX,locationY,board.gridSize,board.gridSize,'location',null);
+            var locationX = board.startPoint.x + i * this.gridSize - board.gridSize / 2;
+            var locationY = board.startPoint.y + j * this.gridSize - board.gridSize / 2;
+            var loaction = board.graph.insertVertex(parent, null, '', locationX, locationY, board.gridSize, board.gridSize, 'location', null);
         }
     }
 };
 
 
 
-//棋盘重绘
-ChessBoard.prototype.redraw = function() {
-
+//绘制棋子
+ChessBoard.prototype.drawPieces = function() {
+    for (var i = 0; i<boradSize; i++) {
+        this.data[i] = [];
+        for(var j = 0; j<boradSize; j++){
+            this.data[i][j] = this._EMPTY;
+        }   
+    }
 };
