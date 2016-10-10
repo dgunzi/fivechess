@@ -1,8 +1,8 @@
 function FiveChessData(){
 	this.data = [];
-	this._EMPTY = 0;
-	this._BLACK = 1;
-	this._WHITE = 2;
+	this._EMPTY = 0; //空位
+	this._BLACK = 1; //黑棋
+	this._WHITE = 2; //白棋
 }
 
 FiveChessData.prototype.init = function(boradSize){

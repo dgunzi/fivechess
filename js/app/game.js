@@ -3,6 +3,7 @@ function FiveChess() {
 	this.board = new ChessBoard();
 	this.chessbox = new ChessBox();
 	this.isFinish = false;
+	this.isYourTurn = true;
 };
 
 //游戏开始

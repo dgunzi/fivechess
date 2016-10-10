@@ -42,6 +42,8 @@ function ChessBoard() {
     //星的大小
     this.starWidth = 8;
     this.data = new FiveChessData();
+    this.locations = []; //存储所有落子位置
+    this.chessImgs = ['./img/blackchess.png','./img/whitechess.png'];
 };
 
 //初始化
@@ -54,7 +56,12 @@ ChessBoard.prototype.init = function(graph) {
         this._loadStyle();
         this._graphConfig();
         this._draw();
+        this.drawPieces();
     }
+};
+
+ChessBoard.prototype.addEvent = function(){
+    this.graph.addEvent();
 };
 
 //游戏图建立
@@ -96,7 +103,6 @@ ChessBoard.prototype._graphConfig = function() {
     var graph = this.graph;
     //设置不允许节点改变大小
     graph.setCellsResizable(false);
-    graph.dropEnabled = true;
     graph.isCellFoldable = function(cell, collapse) {
         return false;
     }
@@ -169,22 +175,40 @@ ChessBoard.prototype._printLocation = function() {
     var board = this;
     var parent = this.graph.getDefaultParent();
     for (var i = 0; i < board.boardSize; i++) {
+        this.locations[i] = [];
         for (var j = 0; j < board.boardSize; j++) {
             var locationX = board.startPoint.x + i * this.gridSize - board.gridSize / 2;
             var locationY = board.startPoint.y + j * this.gridSize - board.gridSize / 2;
-            var loaction = board.graph.insertVertex(parent, null, '', locationX, locationY, board.gridSize, board.gridSize, 'location', null);
+            var locationCell = board.graph.insertVertex(parent, null, '', locationX, locationY, board.gridSize, board.gridSize, 'location', null);
+            this.locations[i][j] = locationCell;
         }
     }
 };
 
+//落子
+ChessBoard.prototype.fallPiece = function(target,isYourTurn){
+    var imgUrl = isYourTurn ? this.chessImgs[this.data.black() - 1] : this.chessImgs[this.data.white() - 1];
+    var cell = new mxCell('', new mxGeometry(0, 0, board.gridSize, board.gridSize), 'image;image=' + imgUrl);
+    cell.vertex = true;
+    var cells = graph.importCells([cell], target.getGeometry().x, target.getGeometry().y, target);
+    if (cells != null && cells > 0) {
+        graph.scrollCellToVisible(cells[0]);
+        graph.setSelectionCells(cells);
+     }
+};
 
 
 //绘制棋子
 ChessBoard.prototype.drawPieces = function() {
     for (var i = 0; i<boradSize; i++) {
-        this.data[i] = [];
         for(var j = 0; j<boradSize; j++){
-            this.data[i][j] = this._EMPTY;
+            if(this.data[i][j] !== this.data.empty()){
+                if(this.data[i][j] == this.data.black()){
+                    this.fallPiece(this.locations[i][j],true); //落黑棋
+                }else{
+                    this.fallPiece(this.locations[i][j],false); //落白棋
+                }
+            }
         }   
     }
 };
