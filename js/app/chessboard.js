@@ -47,7 +47,8 @@ function ChessBoard() {
 };
 
 //初始化
-ChessBoard.prototype.init = function(graph) {
+ChessBoard.prototype.init = function(chessGame) {
+    this.game = chessGame;
     if (!mxClient.isBrowserSupported()) {
         mxUtils.error('浏览器不支持maGraph控件!', 200, false);
     } else {
@@ -57,11 +58,19 @@ ChessBoard.prototype.init = function(graph) {
         this._graphConfig();
         this._draw();
         this.drawPieces();
+        this.addEvent();
     }
 };
 
+//添加事件(落黑子)
 ChessBoard.prototype.addEvent = function(){
-    this.graph.addEvent();
+    var self = this;
+    self.graph.addListener(mxEvent.CLICK, function(sender, evt) {
+        var cell = evt.getProperty('cell');
+        if (cell.style == 'location') {
+            self.fallPiece(cell,true);
+        }
+    });
 };
 
 //游戏图建立
@@ -188,9 +197,9 @@ ChessBoard.prototype._printLocation = function() {
 //落子
 ChessBoard.prototype.fallPiece = function(target,isYourTurn){
     var imgUrl = isYourTurn ? this.chessImgs[this.data.black() - 1] : this.chessImgs[this.data.white() - 1];
-    var cell = new mxCell('', new mxGeometry(0, 0, board.gridSize, board.gridSize), 'image;image=' + imgUrl);
+    var cell = new mxCell('', new mxGeometry(0, 0, this.gridSize, this.gridSize), 'image;image=' + imgUrl);
     cell.vertex = true;
-    var cells = graph.importCells([cell], target.getGeometry().x, target.getGeometry().y, target);
+    var cells = this.graph.importCells([cell], target.getGeometry().x, target.getGeometry().y, target);
     if (cells != null && cells > 0) {
         graph.scrollCellToVisible(cells[0]);
         graph.setSelectionCells(cells);
@@ -200,8 +209,8 @@ ChessBoard.prototype.fallPiece = function(target,isYourTurn){
 
 //绘制棋子
 ChessBoard.prototype.drawPieces = function() {
-    for (var i = 0; i<boradSize; i++) {
-        for(var j = 0; j<boradSize; j++){
+    for (var i = 0; i<this.boradSize; i++) {
+        for(var j = 0; j<this.boardSize; j++){
             if(this.data[i][j] !== this.data.empty()){
                 if(this.data[i][j] == this.data.black()){
                     this.fallPiece(this.locations[i][j],true); //落黑棋

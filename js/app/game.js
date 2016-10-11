@@ -16,10 +16,13 @@ FiveChess.prototype.checkwin = function(first_argument) {
 	// body...
 };
 
+FiveChess.prototype.getTurn = function(){
+	return this.isYourTurn;
+};
 
 //环境初始化
 FiveChess.prototype.init = function(first_argument) {
-	this.board.init();
+	this.board.init(this);
 	this.chessbox.init(this.board);
 };
 
